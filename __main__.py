@@ -1,6 +1,9 @@
 # Python 4chan Downloader
 import argparse
 
+from straight.plugin import load
+from plugins.ChanParserInterface import ChanParserInterface
+
 
 def main():
     # Parsing arguments
@@ -16,6 +19,13 @@ def main():
                         help="Define if the html page of the thread will be saved too")
 
     args = parser.parse_args()
+
+    plugins = load("plugins", subclasses=ChanParserInterface)
+    for parser in plugins:
+        try:
+            print(parser.its_me("4chan"))
+        except:
+            pass
 
 
 if __name__ == '__main__':

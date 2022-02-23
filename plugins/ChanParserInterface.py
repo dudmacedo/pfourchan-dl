@@ -2,10 +2,21 @@ import os
 import re
 import wget
 
+from typing import final
 from datetime import datetime
 
 
 class ChanParserInterface:
+    def __init__(self):
+        self.parser_ids = []
+
+    """Returns if this is the pretended parser of the passed id"""
+    def its_me(self, parser_id: str):
+        if parser_id in self.parser_ids:
+            return True
+        else:
+            return False
+
     """Download Threads from the Board"""
     def download_board(self, board_url: str, output_dir: str, board_archive: bool):
         pass

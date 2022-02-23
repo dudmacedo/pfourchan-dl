@@ -1,0 +1,2 @@
+wget~=3.2
+setuptools~=57.0.0
