@@ -7,10 +7,11 @@ from datetime import datetime
 
 
 class ChanParserInterface:
-    def __init__(self):
-        self.parser_ids = []
+    def __init__(self, parser_ids):
+        self.parser_ids = parser_ids
 
     """Returns if this is the pretended parser of the passed id"""
+    @final
     def its_me(self, parser_id: str):
         if parser_id in self.parser_ids:
             return True
