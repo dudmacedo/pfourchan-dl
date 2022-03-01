@@ -6,11 +6,11 @@ from selenium import webdriver
 from plugins.ChanParserInterface import ChanParserInterface
 
 
-class BrChanParser(ChanParserInterface):
+class Parser27Chan(ChanParserInterface):
     def __init__(self):
-        super().__init__(["1500chan", "1500chan.org"])
-        self.url_base1 = "https://1500chan.org/"
-        self.url_base2 = "https://1500chan.org"
+        super().__init__(["27chan", "27chan.org"])
+        self.url_base1 = "https://27chan.org/"
+        self.url_base2 = "https://27chan.org"
 
     """Download Threads from the Board"""
 
