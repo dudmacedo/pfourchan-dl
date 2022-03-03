@@ -1,4 +1,3 @@
-import os
 import requests
 
 from bs4 import BeautifulSoup
@@ -12,9 +11,9 @@ class Parser4Chan(ChanParserInterface):
         self.url_base1 = "https://boards.4chan.org/"
         self.url_base2 = "https://boards.4chan.org"
 
-    """Download Threads from the Board"""
+    """Parse Threads from the Board"""
 
-    def download_board(self, board_url: str, output_dir: str, board_archive: bool):
+    def parse_board(self, board_url: str, board_archive: bool):
         options = webdriver.ChromeOptions()
         options.add_argument('--headless')
         driver = webdriver.Chrome(options=options)
@@ -22,10 +21,11 @@ class Parser4Chan(ChanParserInterface):
 
         soup = BeautifulSoup(driver.page_source, 'html.parser')
 
+        threads = []
         divs = soup.findAll('div', {'class': 'thread'})
         for div in divs:
             a_href = div.find('a').get('href').split('#')[0]
-            self.download_thread('https:' + a_href, output_dir)
+            threads.append('https:' + a_href)
 
         if board_archive:
             options = webdriver.ChromeOptions()
@@ -37,11 +37,13 @@ class Parser4Chan(ChanParserInterface):
 
             a_links = soup.findAll('a', {'class': 'quotelink'})
             for link in a_links:
-                self.download_thread(self.url_base2 + link.get('href'), output_dir)
+                threads.append(self.url_base2 + link.get('href'))
 
-    """Download Thread from the URL"""
+        return threads
 
-    def download_thread(self, thread_url: str, output_dir: str):
+    """Parse Thread from the URL"""
+
+    def parse_thread(self, thread_url: str):
         res = requests.get(thread_url)
         html_page = res.text
 
@@ -52,17 +54,12 @@ class Parser4Chan(ChanParserInterface):
         thread_title = title_data[1]
         board_name = title_data[2]
 
-        # Creating directories
-        dest_directory = "{}{}/{}".format(output_dir,
-                                          self.get_valid_filename(board_name),
-                                          self.get_valid_filename(thread_title))
-        print("Destination:", dest_directory)
-        if not os.path.exists(dest_directory):
-            os.makedirs(dest_directory)
-
         # Finding files
+        links = []
         files = soup.findAll('div', {'class': 'file'})
         for f in files:
             a = f.find('a', {'class': 'fileThumb'})
             if a is not None:
-                self.download_file("http:" + a.get('href'), dest_directory)
+                links.append("http:" + a.get('href'))
+
+        return board_name, thread_title, links
