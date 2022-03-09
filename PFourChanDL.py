@@ -2,6 +2,8 @@
 import argparse
 import os
 import re
+import time
+
 import wget
 
 from straight.plugin import load
@@ -71,6 +73,7 @@ class PFourChanDL(object):
             count = count + 1
             print("({}/{})".format(count, total))
             self.download_file(link, dest_directory)
+            time.sleep(0.05)
 
     @staticmethod
     def download_file(url, dest_directory):
